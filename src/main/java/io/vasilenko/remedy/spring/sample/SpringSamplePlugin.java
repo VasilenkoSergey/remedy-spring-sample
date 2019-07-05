@@ -8,10 +8,14 @@ import com.bmc.thirdparty.org.slf4j.LoggerFactory;
 import io.vasilenko.remedy.spring.sample.service.PluginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Configuration
+@ComponentScan
 public class SpringSamplePlugin extends ARFilterAPIPlugin {
 
     private static final int INPUT_NAME_VALUE_INDEX = 0;
@@ -19,13 +23,16 @@ public class SpringSamplePlugin extends ARFilterAPIPlugin {
     private final Logger log = LoggerFactory.getLogger(SpringSamplePlugin.class);
 
     private AnnotationConfigApplicationContext applicationContext;
+    private PluginService service;
 
     @Autowired
-    private PluginService service;
+    public void setService(PluginService service) {
+        this.service = service;
+    }
 
     @Override
     public void initialize(ARPluginContext context) {
-        applicationContext = new AnnotationConfigApplicationContext(SpringSamplePlugin.class.getPackage().getName());
+        applicationContext = new AnnotationConfigApplicationContext(SpringSamplePlugin.class);
         applicationContext.getAutowireCapableBeanFactory().autowireBean(this);
         log.info("initialized");
     }
